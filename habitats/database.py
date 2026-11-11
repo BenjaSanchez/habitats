@@ -60,3 +60,54 @@ def update_sensors(sensors):
     ]
 
     return d1_request(sql, params)
+
+
+def get_active_sensors():
+    """Retrieve active sensor IDs from D1."""
+    response = d1_request(
+        "SELECT device_id FROM sensors WHERE active = 1"
+    )
+
+    return [
+        row["device_id"]
+        for row in response["result"][0]["results"]
+    ]
+
+
+def insert_readings(readings):
+    """Insert collected sensor readings into D1."""
+    if not readings:
+        raise RuntimeError("No readings to insert.")
+
+    import time
+
+    collected_at = int(time.time())
+
+    placeholders = ", ".join(["(?, ?, ?, ?, ?, ?)"] * len(readings))
+
+    sql = f"""
+        INSERT OR IGNORE INTO readings (
+            device_id,
+            collected_at,
+            temperature,
+            temperature_timestamp,
+            humidity,
+            humidity_timestamp
+        )
+        VALUES {placeholders}
+    """
+
+    params = [
+        value
+        for reading in readings
+        for value in (
+            reading["device_id"],
+            collected_at,
+            reading["temperature"],
+            reading["temperature_timestamp"],
+            reading["humidity"],
+            reading["humidity_timestamp"],
+        )
+    ]
+
+    return d1_request(sql, params)

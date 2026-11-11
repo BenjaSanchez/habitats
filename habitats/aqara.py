@@ -100,3 +100,51 @@ def get_sensors():
         raise RuntimeError("An Aqara sensor has no device name.")
 
     return sensors
+
+
+def get_sensor_readings(device_ids):
+    """Retrieve current temperature and humidity for multiple sensors."""
+    resources = [
+        {
+            "subjectId": device_id,
+            "resourceIds": ["0.1.85", "0.2.85"],
+        }
+        for device_id in device_ids
+    ]
+
+    result = aqara_request(
+        "query.resource.value",
+        {"resources": resources},
+    )
+
+    if not isinstance(result, list):
+        raise RuntimeError(f"Unexpected Aqara resource response: {result}")
+
+    readings = {}
+
+    for item in result:
+        device_id = item["subjectId"]
+        resource_id = item["resourceId"]
+
+        reading = readings.setdefault(
+            device_id,
+            {
+                "device_id": device_id,
+                "temperature": None,
+                "temperature_timestamp": None,
+                "humidity": None,
+                "humidity_timestamp": None,
+            },
+        )
+
+        timestamp = int(item["timeStamp"]) // 1000
+        value = float(item["value"]) / 100
+
+        if resource_id == "0.1.85":
+            reading["temperature"] = value
+            reading["temperature_timestamp"] = timestamp
+        elif resource_id == "0.2.85":
+            reading["humidity"] = value
+            reading["humidity_timestamp"] = timestamp
+
+    return list(readings.values())
