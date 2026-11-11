@@ -1,5 +1,5 @@
 from habitats.aqara import get_sensors
-from habitats.database import sync_sensors
+from habitats.database import update_sensors
 
 
 def main():
@@ -8,7 +8,7 @@ def main():
     if not sensors:
         raise RuntimeError("No Aqara temperature/humidity sensors found.")
 
-    sync_sensors(sensors)
+    update_sensors(sensors)
 
     print(f"Synchronized {len(sensors)} sensors:")
     for sensor in sensors:

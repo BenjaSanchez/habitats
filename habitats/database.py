@@ -38,7 +38,7 @@ def d1_request(sql, params=None):
     return result
 
 
-def sync_sensors(sensors):
+def update_sensors(sensors):
     """Insert new sensors and update names of existing sensors."""
     if not sensors:
         raise RuntimeError("No Aqara temperature/humidity sensors found.")
