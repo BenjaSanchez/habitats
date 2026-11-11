@@ -1,0 +1,31 @@
+name: Sync Aqara sensors
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync-sensors:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Synchronize sensors
+        env:
+          AQARA_APP_ID: ${{ vars.AQARA_APP_ID }}
+          AQARA_KEY_ID: ${{ vars.AQARA_KEY_ID }}
+          AQARA_APP_KEY: ${{ secrets.AQARA_APP_KEY }}
+          AQARA_ACCESS_TOKEN: ${{ secrets.AQARA_ACCESS_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_DATABASE_ID: ${{ vars.CLOUDFLARE_DATABASE_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: python -m habitats.sync_sensors
