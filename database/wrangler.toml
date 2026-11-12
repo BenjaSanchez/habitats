@@ -1,0 +1,6 @@
+name = "habitats-scheduler"
+main = "scheduler.js"
+compatibility_date = "2026-11-12"
+
+[triggers]
+crons = ["0 * * * *"]
