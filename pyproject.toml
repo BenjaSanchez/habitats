@@ -1,0 +1,31 @@
+[build-system]
+requires = [
+    "setuptools>=68",
+    "wheel",
+    "setuptools_scm[toml]>=8",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "habitats"
+dynamic = ["version"]
+description = "Aqara sensor monitoring for temperature and humidity trends."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+authors = [{ name = "BenjaSanchez" }]
+keywords = ["aqara", "sensors", "monitoring", "temperature", "humidity"]
+
+[project.urls]
+Homepage = "https://github.com/BenjaSanchez/habitats"
+
+[project.scripts]
+habitats-sync-sensors = "habitats.sync_sensors:main"
+habitats-collect-readings = "habitats.collect_readings:main"
+
+[tool.setuptools.packages.find]
+include = ["habitats*"]
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
